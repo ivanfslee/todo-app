@@ -1,16 +1,27 @@
-let express = require('express');
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+const keys = require('./keys')
+require('./Item');
+const app = express();
+let connectionString = keys.mongoURI;
+mongoose.connect(connectionString);
+const Item = mongoose.model('items');
 
-let app = express();
+
 app.use(express.urlencoded({extended: false}))
-let path = require('path');
+
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.post('/create-item', function(req, res) {
-    console.log(req.body.item);
-    res.send("Thank you for submitting the form.")
+app.post('/create-item', async (req, res) => {
+    const todoItem = await new Item({ text: req.body.item}).save()
+    res.send(
+        `<p>"Thank you for submitting the form."</p>
+        <a href="/">Go Back</a>`
+    )
 });
 
 app.listen(3000);
