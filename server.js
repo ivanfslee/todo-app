@@ -8,9 +8,24 @@ let connectionString = keys.mongoURI;
 mongoose.connect(connectionString);
 const Item = mongoose.model('items');
 
+//middleware
 app.use(express.static('public'))
 app.use(express.json());
 app.use(express.urlencoded({extended: false}))
+
+function passwordProtection(req, res, next) {
+    res.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
+    if (req.headers.authorization === "placeholder") { //if user input is correct
+        next();
+    } else {
+        res.status(401).send('Authentication Required');
+    }
+}
+
+app.use(passwordProtection); //tells express to run this middleware on ALL routes
+
+
+//route handlers
 
 app.get('/', function(req, res) {
     Item.find({}, function (error, items) { // function returns all the items of database in an array
