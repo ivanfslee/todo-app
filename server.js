@@ -4,10 +4,13 @@ const path = require('path');
 const keys = require('./keys')
 require('./Item');
 const app = express();
+
 let connectionString = keys.mongoURI;
 mongoose.connect(connectionString);
 const Item = mongoose.model('items');
 
+app.use(express.static('public'))
+app.use(express.json());
 app.use(express.urlencoded({extended: false}))
 
 app.get('/', function(req, res) {
@@ -59,5 +62,10 @@ app.post('/create-item', async (req, res) => {
     const todoItem = await new Item({ text: req.body.item}).save();
     res.redirect('/');
 });
+
+app.post('/update-item', (req, res) => {
+    console.log(req.body.text);
+    res.send('Success');
+})
 
 app.listen(3000);
