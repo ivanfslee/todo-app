@@ -9,6 +9,16 @@ function itemTemplate(item) {
     </li>` 
 }
 
+// Initial page load render
+
+let ourHTML = items.map(function(item) { 
+    return itemTemplate(item);
+}).join(''); //join array into an html string
+
+// add string of html (ourHTML) to our 'item-list' element which is an html <ul> element 
+document.getElementById('item-list').insertAdjacentHTML('beforeend', ourHTML);
+
+
 // Create todo
 let createField = document.getElementById('create-field');
 
